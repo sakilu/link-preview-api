@@ -19,6 +19,7 @@ type Preview struct {
 }
 
 func getUrlData(w http.ResponseWriter, r *http.Request) {
+	addCorsHeader(w)
 	r.ParseForm()
 	url, ok := r.Form["url"]
 	if !ok {
@@ -41,9 +42,11 @@ func getUrlData(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUrl(w http.ResponseWriter, r *http.Request) {
+	addCorsHeader(w)
 	io.WriteString(w, "")
 }
 func GetEmptyString(w http.ResponseWriter, r *http.Request)  {
+	addCorsHeader(w)
 	io.WriteString(w, "")
 }
 func main() {
@@ -74,4 +77,11 @@ func GetPort() string {
 		fmt.Println("INFO: No PORT environment variable detected, defaulting to " + port)
 	}
 	return ":" + port
+}
+
+func addCorsHeader(res http.ResponseWriter) {
+	headers := res.Header()
+	headers.Add("Access-Control-Allow-Origin", "*")
+	headers.Add("Access-Control-Allow-Headers", "Content-Type, Origin, Accept, token")
+	headers.Add("Access-Control-Allow-Methods", "GET, POST,OPTIONS")
 }
