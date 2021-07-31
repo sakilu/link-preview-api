@@ -48,10 +48,11 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", getUrlData).Methods("POST")
 	router.HandleFunc("/", getUrl).Methods("GET")
+	router.HandleFunc("/", "").Methods("OPTIONS")
 
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
 	originsOk := handlers.AllowedOrigins([]string{GetOrigins()})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "POST"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"})
 
 	http.ListenAndServe(GetPort(), handlers.CORS(originsOk, headersOk, methodsOk)(router))
 }
