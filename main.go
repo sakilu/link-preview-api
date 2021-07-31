@@ -2,13 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"fmt"
-	"io"
-	"os"
-	"net/http"
 	"github.com/badoux/goscraper"
-	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
 )
 
 type Preview struct {
@@ -19,7 +16,7 @@ type Preview struct {
 }
 
 func getUrlData(w http.ResponseWriter, r *http.Request) {
-	addCorsHeader(w)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	r.ParseForm()
 	url, ok := r.Form["url"]
 	if !ok {
@@ -41,47 +38,14 @@ func getUrlData(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getUrl(w http.ResponseWriter, r *http.Request) {
-	addCorsHeader(w)
-	io.WriteString(w, "")
-}
 func GetEmptyString(w http.ResponseWriter, r *http.Request)  {
-	addCorsHeader(w)
-	io.WriteString(w, "")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", getUrlData).Methods("POST")
-	router.HandleFunc("/", getUrl).Methods("GET")
-	router.HandleFunc("/", GetEmptyString).Methods("OPTIONS")
+	router.HandleFunc("/", GetEmptyString).Methods("OPTIONS", "GET")
 
-	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
-	originsOk := handlers.AllowedOrigins([]string{GetOrigins()})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"})
-
-	http.ListenAndServe(GetPort(), handlers.CORS(originsOk, headersOk, methodsOk)(router))
-}
-
-func GetOrigins() string {
-	var origin = os.Getenv("ORIGIN_ALLOWED")
-	if origin == "" {
-		origin = "*"
-		fmt.Println("INFO: No ORIGIN_ALLOWED environment variable detected, defaulting to " + origin)
-	}
-	return origin
-}
-func GetPort() string {
-	var port = os.Getenv("PORT")
-	if port == "" {
-		port = "4747"
-		fmt.Println("INFO: No PORT environment variable detected, defaulting to " + port)
-	}
-	return ":" + port
-}
-
-func addCorsHeader(res http.ResponseWriter) {
-	headers := res.Header()
-	headers.Add("Access-Control-Allow-Origin", "*")
-	headers.Add("Access-Control-Allow-Headers", "Content-Type, Origin, Accept, token")
-	headers.Add("Access-Control-Allow-Methods", "GET, POST,OPTIONS")
+	router.Use(mux.CORSMethodMiddleware(router))
+	log.Fatal(http.ListenAndServe(":4747", router))
 }
