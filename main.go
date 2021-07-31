@@ -48,7 +48,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", getUrlData).Methods("POST")
 	router.HandleFunc("/", getUrl).Methods("GET")
-	router.HandleFunc("/", "").Methods("OPTIONS")
+	router.HandleFunc("/", GetEmptyString).Methods("OPTIONS")
 
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
 	originsOk := handlers.AllowedOrigins([]string{GetOrigins()})
@@ -72,4 +72,7 @@ func GetPort() string {
 		fmt.Println("INFO: No PORT environment variable detected, defaulting to " + port)
 	}
 	return ":" + port
+}
+func GetEmptyString() string {
+	return ""
 }
