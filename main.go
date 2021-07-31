@@ -41,9 +41,11 @@ func getUrlData(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUrl(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Link-Preview API")
+	io.WriteString(w, "")
 }
-
+func GetEmptyString(w http.ResponseWriter, r *http.Request)  {
+	io.WriteString(w, "")
+}
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", getUrlData).Methods("POST")
@@ -72,7 +74,4 @@ func GetPort() string {
 		fmt.Println("INFO: No PORT environment variable detected, defaulting to " + port)
 	}
 	return ":" + port
-}
-func GetEmptyString() string {
-	return ""
 }
