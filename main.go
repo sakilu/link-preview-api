@@ -16,9 +16,10 @@ type Preview struct {
 }
 
 func getUrlData(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "content-type,Authorization,access-control-allow-origin")
-
+	w.Header().Set("access-control-allow-credentials", "true")
+	w.Header().Set("access-control-allow-headers", "*")
+	w.Header().Set("access-control-allow-methods", "*")
+	w.Header().Set("access-control-allow-origin", "*")
 	r.ParseForm()
 	url, ok := r.Form["url"]
 	if !ok {
@@ -41,8 +42,10 @@ func getUrlData(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetEmptyString(w http.ResponseWriter, r *http.Request)  {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "content-type,Authorization,access-control-allow-origin")
+	w.Header().Set("access-control-allow-credentials", "true")
+	w.Header().Set("access-control-allow-headers", "*")
+	w.Header().Set("access-control-allow-methods", "*")
+	w.Header().Set("access-control-allow-origin", "*")
 }
 func main() {
 	router := mux.NewRouter()
